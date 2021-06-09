@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       min: 8,
       max:64
     },
-    name: {
+    username: {
       type: DataTypes.STRING,
       min: 3,
       max: 20,
