@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       min: 8,
+      max:64
     },
     name: {
       type: DataTypes.STRING,
