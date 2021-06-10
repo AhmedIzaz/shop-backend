@@ -14,7 +14,7 @@ exports.get_one_category = async (req, res, next) => {
     category
       ? res.json(category).status(200).end()
       : res
-          .json({ error: "cant get the object of category" })
+          .json({ message: "cant get the object of category" })
           .status(404)
           .end();
   } catch (e) {
@@ -28,7 +28,7 @@ exports.product_categories = async (req, res, next) => {
     categories || categories.length == 0
       ? res.json({ categories: categories }).status(200).end()
       : res
-          .json({ error: "cant get the objects of category" })
+          .json({ message: "cant get the objects of category" })
           .status(404)
           .end();
   } catch (e) {
@@ -42,7 +42,7 @@ exports.create_category = async (req, res, next) => {
     categories
       ? res.status(200).end()
       : res
-          .json({ error: "cant create the objects of category" })
+          .json({ message: "cant create the objects of category" })
           .status(404)
           .end();
   } catch (e) {

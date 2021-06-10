@@ -15,7 +15,7 @@ exports.dashboard = async (req, res, next) => {
           .json({ product_category: product_category, product: product })
           .status(200)
           .end()
-      : res.json({ error: "cant get the object " }).status(404).end();
+      : res.json({ message: "cant get the objects " }).status(404).end();
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
   }
