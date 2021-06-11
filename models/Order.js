@@ -5,16 +5,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       product_category_id: {
         type: DataTypes.UUID,
-        references: {
-          model: Product_Category,
-        },
+        
       },
+      product_category_name:DataTypes.STRING,
       product_id: {
         type: DataTypes.UUID,
-        references: {
-          model: Product,
-        },
       },
+      product_name:DataTypes.STRING
     },
     {
       createdAt: true,

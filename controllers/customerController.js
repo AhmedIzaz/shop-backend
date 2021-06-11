@@ -45,11 +45,11 @@ exports.signup_customer = async (req, res, next) => {
     });
     !new_customer
       ? res
-          .json({
-            message: "there are something went wrong to signup as a customer",
-          })
-          .status(404)
-          .end()
+        .json({
+          message: "there are something went wrong to signup as a customer",
+        })
+        .status(404)
+        .end()
       : res.json({ message: "customer created successfully" });
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
@@ -67,3 +67,15 @@ exports.customer_dashboard = async (req, res, next) => {
     res.json({ error: e.message }).status(404).end();
   }
 };
+
+
+exports.make_order = async (req, res, next) => {
+  try {
+    const product = await Product.findOne({ where: { id: req.params.id } })
+    const product_category = await product.getProductCategory()
+    const new_order = await Order.create({ product_category_id: product_category.id, product_category_name: product_category.name, product_id: product.id, product_name: product.name })
+    new_order ? res.json(new_order).status(200).end() : res.json({ message: "cant create the order" }).status(404).end()
+  } catch (e) {
+    res.json({ error: e.message })
+  }
+}

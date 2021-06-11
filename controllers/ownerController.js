@@ -67,3 +67,22 @@ exports.ownerDashboard = async (req, res, next) => {
     res.json({ error: e.message }).status(404).end();
   }
 };
+
+
+exports.all_orders = async(req, res, next)=>{
+  try{
+    const orders = await Order.findAll({attributes:["product_category_name", "product_name"]})
+    orders || orders.length == 0 ? res.json(orders).status(200).end():res.json({message:"cant get the orders"})
+  }catch(e){
+    res.json({error:e.message}).status(404).end()
+  }
+}
+
+exports.clear_order = async(req, res, next)=>{
+  try{
+    const order_destroy = await Order.destroy({where:{id:req.params.order_id}})
+    order_destroy?res.json({message:"order has been cleared"}).status(404).end():res.json({message:"cant cleared the order!"}).status(404).end()
+  }catch(e){
+    res.json({error:e.message}).status(404).end()
+  }
+}
