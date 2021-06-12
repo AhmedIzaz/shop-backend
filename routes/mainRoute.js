@@ -1,15 +1,34 @@
-const router = require("express").Router()
-const dashboard = require("./dashboardRoute")
-const productRoute = require("./productRoute")
-const productCategoryRoute = require("./productCategoryRoute")
-const customerRoute = require("./customerRoute")
-const ownerRoute = require("./ownerRoute")
+const dashboard = require("./dashboardRoute");
+const productRoute = require("./productRoute");
+const productCategoryRoute = require("./productCategoryRoute");
+const customerRoute = require("./customerRoute");
+const ownerRoute = require("./ownerRoute");
 
-router.use("/product", productRoute)
-router.use("/category", productCategoryRoute)
-router.use("/customer", customerRoute)
-router.use("/owner", ownerRoute)
-router.use("/", dashboard)
+const routers = [
+  {
+    path: "/product",
+    handler: productRoute,
+  },
+  {
+    path: "/category",
+    handler: productCategoryRoute,
+  },
+  {
+    path: "/customer",
+    handler: customerRoute,
+  },
+  {
+    path: "/owner",
+    handler: ownerRoute,
+  },
+  {
+    path: "/",
+    handler: dashboard,
+  },
+];
 
-
-module.exports = router
+module.exports = (app) => {
+  routers.map((router) => {
+    app.use(router.path, router.handler);
+  });
+};

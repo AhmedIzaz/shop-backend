@@ -2,6 +2,23 @@ const express = require("express");
 const app = express();
 const db = require("./models");
 const port = process.env.PORT || 8000;
+const mainMiddlewares = require("./middlewares/mainMiddlewares")
+const mainRouter = require("./routes/mainRoute")
+
+mainMiddlewares(app)
+mainRouter(app)
+
+app.use((req, res, next)=>{
+  const error = new Error('404 url not found')
+  error.status = 404
+  next(error)
+})
+
+app.use((error, req, res, next)=>{
+  res.json({error:error.message})
+})
+
+
 
 db.sequelize.sync().then(() => {
   app.listen(port, () => console.log(`server is running on port ${port}`));

@@ -5,13 +5,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       product_category_id: {
         type: DataTypes.UUID,
-        
       },
-      product_category_name:DataTypes.STRING,
+      product_category_name: DataTypes.STRING,
       product_id: {
         type: DataTypes.UUID,
       },
-      product_name:DataTypes.STRING
+      product_name: DataTypes.STRING,
     },
     {
       createdAt: true,
@@ -22,4 +21,5 @@ module.exports = (sequelize, DataTypes) => {
   Order.associate = (models) => {
     Order.belongsTo(models.Customer);
   };
+  return Order;
 };

@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
     "Product",
     {
-      name: {
+      product_name: {
         type: DataTypes.STRING,
         min: 3,
         max: 30,
@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       description: {
-        type: DataTypes.Text,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       available: {
