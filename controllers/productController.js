@@ -37,7 +37,7 @@ exports.create_product = async (req, res, next) => {
   try {
     const new_product = await Product.create(req.body);
     new_product
-      ? res.status(200).end()
+      ? res.json({message:`${new_product.product_name} added to the shop`}).status(200).end()
       : res
           .json({ message: "cant create the object of product" })
           .status(404)

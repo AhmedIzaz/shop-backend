@@ -9,11 +9,12 @@ const bcrypt = require("bcrypt");
 
 exports.login_customer = async (req, res, next) => {
   try {
+    const {email, password} = req.body
     const customer = await Customer.findOne({
-      where: { email: req.body.email },
+      where: { email: email }
     });
     const password_matched = await bcrypt.compare(
-      req.body.password,
+      password,
       customer.password
     );
     password_matched
@@ -34,14 +35,16 @@ exports.logout_customer = async (req, res, next) => {
 
 exports.signup_customer = async (req, res, next) => {
   try {
-    const hashed_password = await bcrypt.hash(req.body.password);
+    const {email, password, username, age, picture, contact_number, ShopId} = req.body
+    const hashed_password = await bcrypt.hash(password, 11);
     const new_customer = await Customer.create({
       email,
-      password: hashed_password,
+      password:hashed_password,
       username,
       age,
       picture,
       contact_number,
+      ShopId
     });
     !new_customer
       ? res
@@ -58,10 +61,10 @@ exports.signup_customer = async (req, res, next) => {
 
 exports.customer_dashboard = async (req, res, next) => {
   try {
-    const customer = await Customer.findOne({ where: { id: 1 } });
+    const customer = await Customer.findOne({ where: { id: 2 } });
     const orders = await customer.getOrders();
-    orders
-      ? res.json(orders).status(200).end()
+    orders || customer
+      ? res.json({customer:customer, orders:orders}).status(200).end()
       : res.json({ message: "customer has no order" }).status(404).end();
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
@@ -70,13 +73,14 @@ exports.customer_dashboard = async (req, res, next) => {
 
 exports.create_order = async (req, res, next) => {
   try {
-    const product = await Product.findOne({ where: { id: req.params.id } });
+    const product = await Product.findOne({ where: { id: req.params.product_id } });
     const product_category = await product.getProduct_Category();
     const new_order = await Order.create({
       product_category_id: product_category.id,
-      product_category_name: product_category.name,
+      product_category_name: product_category.product_category_name,
       product_id: product.id,
-      product_name: product.name,
+      product_name: product.product_name,
+      CustomerId:2
     });
     new_order
       ? res.json(new_order).status(200).end()
@@ -88,11 +92,9 @@ exports.create_order = async (req, res, next) => {
 
 exports.customers_orders = async (req, res, next) => {
   try {
-    const customer = await Customer.findAll({
-      where: { id: req.params.customer_id },
-    });
-    const customers_orders = await customer.getOrders();
-    customers_orders.length > 0
+    const customer = await Customer.findOne({where:{id:req.params.customer_id}})
+    const customers_orders = await customer.getOrders()
+    customers_orders
       ? res.json(customers_orders).status(200).end()
       : res.json({ message: " customer has no orders yet" });
   } catch (e) {

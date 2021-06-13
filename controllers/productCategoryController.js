@@ -24,8 +24,8 @@ exports.get_one_category = async (req, res, next) => {
 
 exports.product_categories = async (req, res, next) => {
   try {
-    const categories = await Product_Category.findAll();
-    categories || categories.length == 0
+    const categories = await Product_Category.findAll({attributes:["product_category_name"]})
+    categories 
       ? res.json({ categories: categories }).status(200).end()
       : res
           .json({ message: "cant get the objects of category" })
@@ -39,8 +39,8 @@ exports.product_categories = async (req, res, next) => {
 exports.create_category = async (req, res, next) => {
   try {
     const new_categories = await Product_Category.create(req.body);
-    categories
-      ? res.status(200).end()
+    new_categories
+      ? res.json({message:"new category added successfully!"}).status(200).end()
       : res
           .json({ message: "cant create the objects of category" })
           .status(404)

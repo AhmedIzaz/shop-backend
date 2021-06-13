@@ -1,10 +1,11 @@
-const dashboard = require("./dashboardRoute");
+const { dashboard } = require("../controllers/dashboardController");
 const productRoute = require("./productRoute");
 const productCategoryRoute = require("./productCategoryRoute");
 const customerRoute = require("./customerRoute");
 const ownerRoute = require("./ownerRoute");
+const { route } = require("./customerRoute");
 
-const routers = [
+const router = [
   {
     path: "/product",
     handler: productRoute,
@@ -28,7 +29,9 @@ const routers = [
 ];
 
 module.exports = (app) => {
-  routers.map((router) => {
-    app.use(router.path, router.handler);
+  router.map((route) => {
+    route.path === "/"
+      ? app.get(route.path, route.handler)
+      : app.use(route.path, route.handler);
   });
 };

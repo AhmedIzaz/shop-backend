@@ -8,7 +8,7 @@ const {
   customers_orders,
 } = require("../controllers/customerController");
 
-router.post("/create-order", create_order);
+router.post("/create-order/:product_id", create_order);
 router.get("/orders/:customer_id", customers_orders);
 router.post("/customer-logout", logout_customer);
 router.post("/customer-signup", signup_customer);
