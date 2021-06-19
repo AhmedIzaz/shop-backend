@@ -24,7 +24,7 @@ exports.get_one_category = async (req, res, next) => {
 
 exports.product_categories = async (req, res, next) => {
   try {
-    const categories = await Product_Category.findAll({attributes:["product_category_name"]})
+    const categories = await Product_Category.findAll()
     categories 
       ? res.json({ categories: categories }).status(200).end()
       : res
