@@ -11,8 +11,9 @@ exports.get_one_category = async (req, res, next) => {
     const category = await Product_Category.findOne({
       where: { id: req.params.category_id },
     });
+    const products = await category.getProducts()
     category
-      ? res.json({category:category}).status(200).end()
+      ? res.json({category:category, products:products}).status(200).end()
       : res
           .json({ message: "cant get the object of category" })
           .status(404)
