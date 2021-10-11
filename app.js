@@ -4,10 +4,16 @@ const db = require("./models");
 const port = process.env.PORT || 8000;
 const mainMiddlewares = require("./middlewares/mainMiddlewares");
 const mainRouter = require("./routes/mainRoute");
+const configSession = require("./config/session");
 
+// middlewares
 mainMiddlewares(app);
+configSession(app);
+
+// controllers
 mainRouter(app);
 
+// for invalid route request
 app.use((req, res, next) => {
   const error = new Error("404 url not found");
   error.status = 404;

@@ -15,7 +15,7 @@ exports.login_customer = async (req, res, next) => {
     });
     const password_matched = await bcrypt.compare(password, customer.password);
     if (password_matched) {
-      req.session.isLoggendIn = true;
+      req.session.isLoggedIn = true;
       req.session.customer = customer;
       await req.session.save((err) => {
         err
@@ -25,7 +25,8 @@ exports.login_customer = async (req, res, next) => {
     }
     return res.json({ login: false }).status(404).end();
   } catch (e) {
-    res.json({ error: e.message }).status(404).end();
+    console.log("from login controller");
+    // res.json({ error: e.message }).status(404).end();
   }
 };
 

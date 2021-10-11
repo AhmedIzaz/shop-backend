@@ -13,9 +13,9 @@ const {
   notAuthenticated,
 } = require("../middlewares/authMiddlewares");
 
-router.post("/customer-signup", isAuthenticated, signup_customer);
-router.post("/customer-login", isAuthenticated, login_customer);
-router.post("/customer-logout", notAuthenticated, logout_customer);
+router.post("/customer-signup", signup_customer);
+router.post("/customer-login", login_customer);
+router.post("/customer-logout", logout_customer);
 
 router.get("/customer-dashboard", notAuthenticated, customer_dashboard);
 router.get("/orders/:customer_id", notAuthenticated, customers_orders);

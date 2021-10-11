@@ -25,7 +25,7 @@ exports.bindUserWithRequest = () => {
       req.user = user;
       next();
     } catch (e) {
-      next(e);
+      res.send(req.session.isLoggedIn).end();
     }
   };
 };
