@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      price: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       available: {
         type: DataTypes.BOOLEAN,
       },
