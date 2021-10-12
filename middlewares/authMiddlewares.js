@@ -14,15 +14,14 @@ exports.notAuthenticated = (req, res, next) => {
   next();
 };
 
-exports.bindUserWithRequest = () => {
+exports.bindCustomerWithRequest = () => {
   return async (req, res, next) => {
     try {
       if (!req.session.isLoggedIn) {
         return next();
       }
-      let user = await User.findOne({ _id: req.session.user._id });
-      console.log(req.session.user);
-      req.user = user;
+      let customer = await Customer.findOne({ _id: req.session.customer.id });
+      req.customer = customer;
       next();
     } catch (e) {
       res.send(req.session.isLoggedIn).end();

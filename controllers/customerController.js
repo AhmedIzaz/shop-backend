@@ -17,27 +17,22 @@ exports.login_customer = async (req, res, next) => {
     if (password_matched) {
       req.session.isLoggedIn = true;
       req.session.customer = customer;
-      await req.session.save((err) => {
-        err
-          ? console.log(err.message)
-          : console.log("customer loging successfull");
-      });
+
+      res.json({ customer: req.session.customer });
     }
+
     return res.json({ login: false }).status(404).end();
   } catch (e) {
-    console.log("from login controller");
-    // res.json({ error: e.message }).status(404).end();
+    res.json({ error: e.message }).status(404).end();
   }
 };
 
 exports.logout_customer = async (req, res, next) => {
   try {
     await req.session.destroy((err) => {
-      if (err) {
-        console.log(err);
-        return next(err);
-      }
-      console.log("customer log out successfully");
+      err
+        ? res.json({ message: "customer cant log out" })
+        : res.json({ message: "customer loged out successfully" });
     });
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
@@ -77,11 +72,13 @@ exports.signup_customer = async (req, res, next) => {
 
 exports.customer_dashboard = async (req, res, next) => {
   try {
-    const customer = await Customer.findOne({ where: { id: 2 } });
-    const orders = await customer.getOrders();
-    orders || customer
-      ? res.json({ customer: customer, orders: orders }).status(200).end()
-      : res.json({ message: "customer has no order" }).status(404).end();
+    console.log(req.session.customer);
+    res.json({ customer: req.session.customer });
+    // const customer = await Customer.findOne({ where: { id: 2 } });
+    // const orders = await customer.getOrders();
+    // orders || customer
+    //   ? res.json({ customer: customer, orders: orders }).status(200).end()
+    //   : res.json({ message: "customer has no order" }).status(404).end();
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
   }
