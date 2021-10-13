@@ -1,11 +1,13 @@
 const {
-  Product_Category,
   Product,
   Customer,
-  Shop,
+
   Order,
 } = require("../models");
 const bcrypt = require("bcrypt");
+
+// =========================
+//==========================
 
 exports.login_customer = async (req, res, next) => {
   try {
@@ -28,17 +30,25 @@ exports.login_customer = async (req, res, next) => {
   }
 };
 
+// =========================
+//==========================
+
 exports.logout_customer = async (req, res, next) => {
   try {
     req.session.destroy((err) => {
       err
         ? res.json({ message: "customer cant log out" })
-        : res.json({ message: "customer loged out successfully" });
+        : res.json({
+            message: "customer loged out successfully",
+          });
     });
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
   }
 };
+
+// =========================
+//==========================
 
 exports.signup_customer = async (req, res, next) => {
   try {
@@ -71,9 +81,14 @@ exports.signup_customer = async (req, res, next) => {
   }
 };
 
+// =========================
+//==========================
+
 exports.customer_dashboard = async (req, res, next) => {
   try {
-    const customer = await Customer.findOne({ where: { id: 2 } });
+    const customer = await Customer.findOne({
+      where: { id: req.session.customer.id },
+    });
     const orders = await customer.getOrders();
     orders || customer
       ? res.json({ customer: customer, orders: orders }).status(200).end()
@@ -82,6 +97,9 @@ exports.customer_dashboard = async (req, res, next) => {
     res.json({ error: e.message }).status(404).end();
   }
 };
+
+// =========================
+//==========================
 
 exports.create_order = async (req, res, next) => {
   try {
@@ -94,7 +112,7 @@ exports.create_order = async (req, res, next) => {
       product_category_name: product_category.product_category_name,
       product_id: product.id,
       product_name: product.product_name,
-      CustomerId: 2,
+      CustomerId: req.session.customer.id,
     });
     new_order
       ? res.json(new_order).status(200).end()
@@ -104,10 +122,13 @@ exports.create_order = async (req, res, next) => {
   }
 };
 
+// =========================
+//==========================
+
 exports.customers_orders = async (req, res, next) => {
   try {
     const customer = await Customer.findOne({
-      where: { id: req.params.customer_id },
+      where: { id: req.session.customer.id },
     });
     const customers_orders = await customer.getOrders();
     customers_orders

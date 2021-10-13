@@ -9,7 +9,7 @@ exports.isAuthenticated = (req, res, next) => {
 
 exports.notAuthenticated = (req, res, next) => {
   if (!req.session.isLoggedIn) {
-    return res.send("login first").status(400).end();
+    return res.json({ message: "login first" }).status(400).end();
   }
   next();
 };
@@ -20,8 +20,8 @@ exports.bindCustomerWithRequest = () => {
       if (!req.session.isLoggedIn) {
         return next();
       }
-      let customer = await Customer.findOne({ _id: req.session.customer.id });
-      req.customer = customer;
+      const customer = await Customer.findOne({ id: req.session.customer.id });
+
       next();
     } catch (e) {
       res.send(req.session.isLoggedIn).end();

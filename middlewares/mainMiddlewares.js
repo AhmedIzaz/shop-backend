@@ -29,6 +29,8 @@ const middlewares = [
       maxAge: 60 * 60 * 1000,
     },
   }),
+
+  // bindCustomerWithRequest(),
 ];
 
 module.exports = (app) => {
