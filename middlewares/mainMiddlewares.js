@@ -4,27 +4,31 @@ const cookieParser = require("cookie-parser");
 const myDatabase = require("../models");
 const { bindCustomerWithRequest } = require("./authMiddlewares");
 const session = require("express-session");
+const mysql = require("mysql2");
 const mysqlSession = require("express-mysql-session")(session);
 
-const options = {
+const option = {
   user: "root",
   password: "01839465030",
   database: "my_shop",
   host: "localhost",
 };
 
-const sessionStore = new mysqlSession(options);
+const sessionStore = new mysqlSession(option);
 
 const middlewares = [
+  cors(),
+  express.urlencoded({ extended: true }),
+  express.json(),
   session({
     secret: "cookie_secret",
     resave: true,
     saveUninitialized: true,
-    store: sessionStore, // assigning sessionStore to the session
+    store: sessionStore,
+    cookie: {
+      maxAge: 60 * 60 * 1000,
+    },
   }),
-  cors(),
-  express.urlencoded({ extended: true }),
-  express.json(),
 ];
 
 module.exports = (app) => {
