@@ -11,10 +11,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
       },
       product_name: DataTypes.STRING,
+      quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      CustomerId: {
+        type: DataTypes.UUID,
+      },
     },
     {
       createdAt: true,
-      updatedAt: false,
+      updatedAt: true,
     }
   );
 

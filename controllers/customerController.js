@@ -112,6 +112,7 @@ exports.create_order = async (req, res, next) => {
       product_category_name: product_category.product_category_name,
       product_id: product.id,
       product_name: product.product_name,
+      quantity: 1,
       CustomerId: req.session.customer.id,
     });
     new_order
@@ -135,6 +136,29 @@ exports.customers_orders = async (req, res, next) => {
       ? res.json(customers_orders).status(200).end()
       : res.json({ message: " customer has no orders yet" });
   } catch (e) {
-    res.json(e.message);
+    res.json({ error: e.message });
+  }
+};
+
+// =========================
+//==========================
+
+exports.update_customer_orders_quantity = async (req, res, next) => {
+  try {
+    const { type } = req.body;
+    const customer = await Customer.findOne({
+      where: { id: req.session.customer.id },
+    });
+    const customers_order = await Order.findOne({
+      where: { CustomerId: customer.id },
+    });
+
+    type === "increament"
+      ? (customers_order.quantity = customers_order.quantity + 1)
+      : (customers_order.quantity = customers_order.quantity - 1);
+    await customers_order.save();
+    res.json(customers_order);
+  } catch (e) {
+    res.json({ error: e.message });
   }
 };
