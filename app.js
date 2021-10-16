@@ -24,6 +24,6 @@ app.use((error, req, res, next) => {
 
 // when you add a new column or field in any data model just give={ alter: true } object into sync function
 
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
   app.listen(port, () => console.log(`server is running on port ${port}`));
 });

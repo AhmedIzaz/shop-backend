@@ -18,9 +18,8 @@ router.post("/customer-signup", isAuthenticated, signup_customer);
 router.post("/customer-login", isAuthenticated, login_customer);
 router.post("/customer-logout", notAuthenticated, logout_customer);
 
-router.get("/customer-dashboard", customer_dashboard);
-router.get("/orders", customers_orders);
-router.post("/update-quantity", update_customer_orders_quantity);
-router.post("/create-order/:product_id", create_order);
+router.get("/customer-dashboard", notAuthenticated, customer_dashboard);
+
+router.post("/create-order/", notAuthenticated, create_order);
 
 module.exports = router;

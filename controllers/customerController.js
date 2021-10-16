@@ -100,24 +100,27 @@ exports.customer_dashboard = async (req, res, next) => {
 
 // =========================
 //==========================
+// data would be list where every objects is ordered item where product id and quantity will include...
 
 exports.create_order = async (req, res, next) => {
   try {
-    const product = await Product.findOne({
-      where: { id: req.params.product_id },
+    const { data } = req.body;
+    data.forEach((productItem) => {
+      const product = await Product.findOne({
+        where: { id: productItem.id },
+      });
+
+      await Order.create({
+        product_id: product.id,
+        product_name: product.product_name,
+        quantity: productItem.quantity,
+        CustomerId: req.session.customer.id,
+      });
     });
-    const product_category = await product.getProduct_Category();
-    const new_order = await Order.create({
-      product_category_id: product_category.id,
-      product_category_name: product_category.product_category_name,
-      product_id: product.id,
-      product_name: product.product_name,
-      quantity: 1,
-      CustomerId: req.session.customer.id,
+    const customers_orders = await Order.findAll({
+      where: { CustomerId: req.session.customer.id },
     });
-    new_order
-      ? res.json(new_order).status(200).end()
-      : res.json({ message: "cant create the order" }).status(404).end();
+    res.json(customers_orders).end();
   } catch (e) {
     res.json({ error: e.message });
   }
@@ -126,39 +129,5 @@ exports.create_order = async (req, res, next) => {
 // =========================
 //==========================
 
-exports.customers_orders = async (req, res, next) => {
-  try {
-    const customer = await Customer.findOne({
-      where: { id: req.session.customer.id },
-    });
-    const customers_orders = await customer.getOrders();
-    customers_orders
-      ? res.json(customers_orders).status(200).end()
-      : res.json({ message: " customer has no orders yet" });
-  } catch (e) {
-    res.json({ error: e.message });
-  }
-};
-
 // =========================
 //==========================
-
-exports.update_customer_orders_quantity = async (req, res, next) => {
-  try {
-    const { type } = req.body;
-    const customer = await Customer.findOne({
-      where: { id: req.session.customer.id },
-    });
-    const customers_order = await Order.findOne({
-      where: { CustomerId: customer.id },
-    });
-
-    type === "increament"
-      ? (customers_order.quantity = customers_order.quantity + 1)
-      : (customers_order.quantity = customers_order.quantity - 1);
-    await customers_order.save();
-    res.json(customers_order);
-  } catch (e) {
-    res.json({ error: e.message });
-  }
-};
