@@ -105,7 +105,7 @@ exports.customer_dashboard = async (req, res, next) => {
 exports.create_order = async (req, res, next) => {
   try {
     const { data } = req.body;
-    data.forEach((productItem) => {
+    data.forEach(async (productItem) => {
       const product = await Product.findOne({
         where: { id: productItem.id },
       });

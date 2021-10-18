@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define(
     "Order",
     {
+      product_id: DataTypes.UUID,
       product_name: DataTypes.STRING,
       quantity: {
         type: DataTypes.INTEGER,

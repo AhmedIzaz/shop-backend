@@ -17,7 +17,9 @@ const option = {
 const sessionStore = new mysqlSession(option);
 
 const middlewares = [
-  cors(),
+  // cors({
+  //   origin: "http://localhost:3000",
+  // }),
   express.urlencoded({ extended: true }),
   express.json(),
   session({
