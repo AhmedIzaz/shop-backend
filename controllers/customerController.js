@@ -15,15 +15,36 @@ exports.login_customer = async (req, res, next) => {
     const customer = await Customer.findOne({
       where: { email: email },
     });
-    const password_matched = await bcrypt.compare(password, customer.password);
-    if (password_matched) {
-      req.session.isLoggedIn = true;
-      req.session.customer = customer;
-      req.session.save((err) =>
-        err
-          ? res.json({ message: "session cant save" })
-          : res.json({ customer: req.session.customer }).end()
+    if (customer) {
+      const password_matched = await bcrypt.compare(
+        password,
+        customer.password
       );
+      if (password_matched) {
+        req.session.isLoggedIn = true;
+        req.session.customer = customer;
+        req.session.save((err) =>
+          err
+            ? res.json({ message: "session cant save" })
+            : res.json({ customer: req.session.customer }).end()
+        );
+      } else {
+        res
+          .json({
+            error: {
+              password: "password didn't matched",
+            },
+          })
+          .end();
+      }
+    } else {
+      res
+        .json({
+          error: {
+            email: "customer email didn't found",
+          },
+        })
+        .end();
     }
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
