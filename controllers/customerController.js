@@ -52,17 +52,15 @@ exports.logout_customer = async (req, res, next) => {
 
 exports.signup_customer = async (req, res, next) => {
   try {
-    const { email, password, username, age, picture, contact_number, ShopId } =
-      req.body;
+    const { email, password, username, contact_number } = req.body;
+
     const hashed_password = await bcrypt.hash(password, 11);
     const new_customer = await Customer.create({
       email,
       password: hashed_password,
       username,
-      age,
-      picture,
       contact_number,
-      ShopId,
+      ShopId: 1,
     });
 
     if (!new_customer) {
@@ -75,7 +73,7 @@ exports.signup_customer = async (req, res, next) => {
     }
 
     await new_customer.save();
-    res.json(new_customer);
+    res.json(new_customer).end();
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
   }
