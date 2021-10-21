@@ -22,8 +22,8 @@ const middlewares = [
   express.json(),
   session({
     secret: "cookie_secret",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     store: sessionStore,
     cookie: {
       maxAge: 60 * 60 * 1000,

@@ -58,9 +58,11 @@ exports.logout_customer = async (req, res, next) => {
   try {
     req.session.destroy((err) => {
       err
-        ? res.json({ message: "customer cant log out" })
+        ? res.json({
+            error: "customer cant log out",
+          })
         : res.json({
-            message: "customer loged out successfully",
+            logout: "customer loged out successfully",
           });
     });
   } catch (e) {
