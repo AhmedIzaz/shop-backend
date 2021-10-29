@@ -13,10 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       CustomerId: {
         type: DataTypes.UUID,
       },
+      delivery_date: {
+        type: DataTypes.STRING,
+        required: true,
+      },
     },
     {
       createdAt: true,
-      updatedAt: true,
+      updatedAt: false,
     }
   );
 

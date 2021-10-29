@@ -156,7 +156,7 @@ exports.change_cart_quantity = async (req, res, next) => {
     await Cart.update(
       {
         quantity:
-          type == "increament"
+          type == "increment"
             ? parseInt(previous_quantity) + 1
             : parseInt(previous_quantity) - 1,
       },
@@ -209,26 +209,33 @@ exports.delete_customer_cart = async (req, res, next) => {
 // data would be list where every objects is ordered item where product id and quantity will include...
 
 exports.create_order = async (req, res, next) => {
+  const { carts, delivery_date } = req.body;
+  if (!delivery_date) {
+    res
+      .json({ error: { message: "give valid date" } })
+      .status(404)
+      .end();
+  }
   try {
-    const { data } = req.body;
-    await data.forEach(async (productItem) => {
-      const product = await Product.findOne({
-        where: { id: productItem.id },
-      });
-
+    await carts.forEach(async (cart) => {
       await Order.create({
-        product_id: product.id,
-        product_name: product.product_name,
-        quantity: productItem.quantity,
+        product_id: cart.product_id,
+        product_name: cart.product_name,
+        quantity: cart.quantity,
         CustomerId: req.session.customer.id,
+        delivery_date: String(delivery_date),
+      });
+      await Cart.destroy({
+        where: { id: cart.id },
       });
     });
+
     const customers_orders = await Order.findAll({
       where: { CustomerId: req.session.customer.id },
     });
-    res.json(customers_orders).end();
+    res.json({ customers_orders: customers_orders }).end();
   } catch (e) {
-    res.json({ error: e.message });
+    res.json({ error: e.message }).end();
   }
 };
 
