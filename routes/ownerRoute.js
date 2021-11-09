@@ -7,12 +7,17 @@ const {
   all_orders,
   clear_order,
 } = require("../controllers/ownerController");
+const {
+  isAuthenticated,
+  notAuthenticated,
+  ownerNotAuthenticated,
+} = require("../middlewares/authMiddlewares");
 
-router.post("/order/clear_order/:order_id", clear_order);
-router.get("/orders", all_orders);
-router.post("/logout", logout);
+router.post("/clear-order", ownerNotAuthenticated, clear_order);
+router.get("/orders", notAuthenticated, all_orders);
+router.post("/logout", ownerNotAuthenticated, logout);
 router.post("/signup", signup);
-router.post("/login", login);
-router.get("/dashboard", ownerDashboard);
+router.post("/login", isAuthenticated, login);
+router.get("/dashboard", ownerNotAuthenticated, ownerDashboard);
 
 module.exports = router;

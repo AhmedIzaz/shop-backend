@@ -137,6 +137,7 @@ exports.create_customers_cart = async (req, res, next) => {
         product_name: product.product_name,
         picture: product.picture,
         price: product.price,
+        ShopId: product.ShopId,
         CustomerId: req.session.customer.id,
       });
       return res.json({ cart: cart }).status(200).end();
@@ -222,8 +223,11 @@ exports.create_order = async (req, res, next) => {
         product_id: cart.product_id,
         product_name: cart.product_name,
         quantity: cart.quantity,
+        price: cart.price * cart.quantity,
         CustomerId: req.session.customer.id,
+        customer_name: req.session.customer.username,
         delivery_date: String(delivery_date),
+        shop_id: cart.ShopId,
       });
       await Cart.destroy({
         where: { id: cart.id },
@@ -233,7 +237,8 @@ exports.create_order = async (req, res, next) => {
     const customers_orders = await Order.findAll({
       where: { CustomerId: req.session.customer.id },
     });
-    res.json({ customers_orders: customers_orders }).end();
+
+    return res.json({ customers_order: customers_orders }).end();
   } catch (e) {
     res.json({ error: e.message }).end();
   }

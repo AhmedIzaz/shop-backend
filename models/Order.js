@@ -3,15 +3,31 @@ module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define(
     "Order",
     {
-      product_id: DataTypes.UUID,
-      product_name: DataTypes.STRING,
+      product_id: {
+        type: DataTypes.UUID,
+        required: true,
+      },
+      product_name: {
+        type: DataTypes.STRING,
+        required: true,
+      },
       quantity: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 1,
       },
-      CustomerId: {
-        type: DataTypes.UUID,
+      price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      customer_name: {
+        type: DataTypes.STRING,
+        required: true,
+      },
+
+      shop_id: {
+        type: DataTypes.STRING,
+        required: true,
       },
       delivery_date: {
         type: DataTypes.STRING,

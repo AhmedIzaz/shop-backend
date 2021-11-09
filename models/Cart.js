@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 1,
       },
+      ShopId: {
+        type: DataTypes.STRING,
+        required: true,
+      },
     },
     {
       timestamps: false,

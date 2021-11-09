@@ -14,6 +14,13 @@ exports.notAuthenticated = (req, res, next) => {
   next();
 };
 
+exports.ownerNotAuthenticated = (req, res, next) => {
+  if (!req.session.ownerLoggedIn) {
+    return res.json({ message: "login first" }).status(400).end();
+  }
+  next();
+};
+
 exports.bindCustomerWithRequest = () => {
   return async (req, res, next) => {
     try {
