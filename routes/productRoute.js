@@ -6,7 +6,6 @@ const {
 
 const router = require("express").Router();
 
-router.post("/create-product", create_product);
 router.get("/get-product/:product_id", get_one_product);
 router.get("/products", products);
 

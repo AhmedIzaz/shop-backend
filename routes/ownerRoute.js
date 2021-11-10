@@ -3,9 +3,10 @@ const {
   signup,
   login,
   logout,
-  ownerDashboard,
-  all_orders,
+  shop_customers,
   clear_order,
+  owner_products,
+  create_product,
 } = require("../controllers/ownerController");
 const {
   isAuthenticated,
@@ -14,10 +15,11 @@ const {
 } = require("../middlewares/authMiddlewares");
 
 router.post("/clear-order", ownerNotAuthenticated, clear_order);
-router.get("/orders", notAuthenticated, all_orders);
 router.post("/logout", ownerNotAuthenticated, logout);
 router.post("/signup", signup);
 router.post("/login", isAuthenticated, login);
-router.get("/dashboard", ownerNotAuthenticated, ownerDashboard);
+router.get("/products", ownerNotAuthenticated, owner_products);
+router.post("/create-product", ownerNotAuthenticated, create_product);
+router.get("/customers", ownerNotAuthenticated, shop_customers);
 
 module.exports = router;

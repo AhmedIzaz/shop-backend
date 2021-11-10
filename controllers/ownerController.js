@@ -55,11 +55,16 @@ exports.login = async (req, res, next) => {
       if (password_matched) {
         req.session.ownerLoggedIn = true;
         req.session.owner = owner;
-        // const orders = await Order.findAll({
-        //   where: { ShopId: owner.ShopId },
-        // });
+
         let customer_id_list = [];
         let order_list = [];
+        const customers = await Customer.findAll({
+          where: { ShopId: req.session.owner.ShopId },
+        });
+        const products = await Product.findAll({
+          where: { ShopId: req.session.owner.ShopId },
+        });
+
         const orders = await Order.findAll({
           where: { shop_id: owner.ShopId },
         });
@@ -92,6 +97,8 @@ exports.login = async (req, res, next) => {
                   owner: req.session.owner,
                   // order_list is s alist where customers id and their orders list will included
                   order_list: order_list,
+                  products: products,
+                  customers: customers,
                   ownerLoggedIn: true,
                 })
                 .end()
@@ -118,20 +125,6 @@ exports.login = async (req, res, next) => {
     res.json({ error: e.message }).status(404).end();
   }
 };
-// exports.login = async (req, res, next) => {
-//   try {
-//     const owner = await Owner.findOne({ where: { email: req.body.email } });
-//     const matched_password = await bcrypt.compare(
-//       req.body.password,
-//       owner.password
-//     );
-//     owner && matched_password
-//       ? res.json({ ownerLogin: true }).status(200).end()
-//       : res.json({ ownerLogin: false }).status(404).end();
-//   } catch (e) {
-//     res.json({ error: e.message }).status(404).end();
-//   }
-// };
 
 exports.logout = async (req, res, next) => {
   try {
@@ -148,48 +141,57 @@ exports.logout = async (req, res, next) => {
     res.json({ error: e.message }).status(404).end();
   }
 };
-exports.ownerDashboard = async (req, res, next) => {
+exports.owner_products = async (req, res, next) => {
   try {
-    let customer_id_list = [];
-    let order_list = [];
-
-    const orders = await Order.findAll({
-      where: { ShopId: 1 },
+    const products = await Product.findAll({
+      where: { ShopId: req.session.owner.ShopId },
     });
-
-    orders.forEach((order) => {
-      if (
-        customer_id_list.filter((item) => item == order.CustomerId).length == 0
-      ) {
-        customer_id_list.push(order.CustomerId);
-      }
-    });
-
-    customer_id_list.forEach((customer_id) => {
-      const customer_orders = orders.filter(
-        (order) => order.CustomerId == customer_id
-      );
-      const obj = {
-        customer_id: customer_id,
-        customer_orders: customer_orders,
-      };
-      order_list.push(obj);
-    });
-    // order_list is s alist where customers id and their orders list will included
-    return res.json({ order_list: order_list }).status(200).end();
+    return res.json({ products: products }).status(200).end();
   } catch (e) {
-    res.json({ error: e.message }).status(404).end();
+    return res.json({ error: e.message }).status(404).end();
   }
 };
 
-exports.all_orders = async (req, res, next) => {
+exports.shop_customers = async (req, res, next) => {
   try {
-    const orders = await Order.findAll({
-      attributes: ["product_category_name", "product_name"],
+    const customers = await Customer.findAll({
+      where: { ShopId: req.session.owner.ShopId },
     });
-    orders || orders.length == 0
-      ? res.json(orders).status(200).end()
-      : res.json({ message: "cant get the orders" });
+    return res.json({ customers: customers }).status(200).end();
+  } catch (e) {
+    return res.json({ error: e.message }).status(404).end();
+  }
+};
+
+exports.create_product = async (req, res, next) => {
+  try {
+    const {
+      product_name,
+      picture,
+      price,
+      description,
+      available,
+      ProductCategoryId,
+    } = req.body;
+    const new_product = await Product.create({
+      product_name,
+      picture,
+      description,
+      price,
+
+      available: available == "yes" ? 1 : 0,
+      ShopId: req.session.owner.ShopId,
+      ProductCategoryId,
+    });
+    new_product
+      ? res
+          .json({ message: `${new_product.product_name} added to the shop` })
+          .status(200)
+          .end()
+      : res
+          .json({ message: "cant create the object of product" })
+          .status(404)
+          .end();
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
   }

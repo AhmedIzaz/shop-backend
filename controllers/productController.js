@@ -13,7 +13,10 @@ exports.get_one_product = async (req, res, next) => {
     });
     product
       ? res.json(product).status(200).end()
-      : res.json({ message: "cant get the object of product" }).status(404).end();
+      : res
+          .json({ message: "cant get the object of product" })
+          .status(404)
+          .end();
   } catch (e) {
     res.json({ error: e.message }).status(404).end();
   }
@@ -26,20 +29,6 @@ exports.products = async (req, res, next) => {
       ? res.json(products).status(200).end()
       : res
           .json({ message: "cant get the objects of product" })
-          .status(404)
-          .end();
-  } catch (e) {
-    res.json({ error: e.message }).status(404).end();
-  }
-};
-
-exports.create_product = async (req, res, next) => {
-  try {
-    const new_product = await Product.create(req.body);
-    new_product
-      ? res.json({message:`${new_product.product_name} added to the shop`}).status(200).end()
-      : res
-          .json({ message: "cant create the object of product" })
           .status(404)
           .end();
   } catch (e) {
