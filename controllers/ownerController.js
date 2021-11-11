@@ -152,17 +152,6 @@ exports.owner_products = async (req, res, next) => {
   }
 };
 
-exports.shop_customers = async (req, res, next) => {
-  try {
-    const customers = await Customer.findAll({
-      where: { ShopId: req.session.owner.ShopId },
-    });
-    return res.json({ customers: customers }).status(200).end();
-  } catch (e) {
-    return res.json({ error: e.message }).status(404).end();
-  }
-};
-
 exports.create_product = async (req, res, next) => {
   try {
     const {
@@ -178,14 +167,16 @@ exports.create_product = async (req, res, next) => {
       picture,
       description,
       price,
-
       available: available == "yes" ? 1 : 0,
       ShopId: req.session.owner.ShopId,
       ProductCategoryId,
     });
     new_product
       ? res
-          .json({ message: `${new_product.product_name} added to the shop` })
+          .json({
+            message: `${new_product.product_name} added to the shop`,
+            product: new_product,
+          })
           .status(200)
           .end()
       : res
@@ -193,7 +184,18 @@ exports.create_product = async (req, res, next) => {
           .status(404)
           .end();
   } catch (e) {
-    res.json({ error: e.message }).status(404).end();
+    return res.json({ error: e.message }).status(404).end();
+  }
+};
+
+exports.delete_product = async (req, res, next) => {
+  try {
+    await Product.destroy({
+      where: { id: req.body.id, ShopId: req.session.owner.ShopId },
+    });
+    return res.status(200).end();
+  } catch (e) {
+    return res.json({ error: e.message }).status(404).end();
   }
 };
 
